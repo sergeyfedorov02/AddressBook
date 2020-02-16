@@ -5,19 +5,19 @@ public class Address {
     private int flat;
     private String street;
 
-    Address(String street, int house, int flat) {
+    Address(String street, Integer house, Integer flat) {
         this.street = street;
         this.house = house;
         this.flat = flat;
     }
 
-    String getStreet() {
+    public String getStreet() {
         return street;
     }
-    int getHouse() {
+    public Integer getHouse() {
         return house;
     }
-    public int getFlat() {
+    public Integer getFlat() {
         return flat;
     }
 
@@ -34,12 +34,11 @@ public class Address {
     @Override
     public final int hashCode() {
         int result = 17;
-        if (street != null)  {
+        if (street != null) {
             result = 31 * result + street.hashCode();
         }
         result = (31 * result) + Integer.hashCode(house);
         result = (31 * result) + Integer.hashCode(flat);
-
         return result;
     }
 }

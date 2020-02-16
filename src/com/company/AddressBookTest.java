@@ -1,212 +1,282 @@
 package com.company;
 
-        import org.junit.Assert;
-        import java.util.ArrayList;
-        import java.util.HashMap;
-        import java.util.Map;
+import org.junit.jupiter.api.Assertions;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 class AddressBookTest {
 
     /** Для всех тестов, чтобы они работали корректно:
-    1) создаем Адресную книгу MeResult, с которой будем работать
-    2) кладем в Нашу Адресную книгу изначальные данные(тк например в Remove, для тестов необходимы начальные данные)
-    3) создаем TrueResult, где будет храниться правильный ответ, чтобы потом с ним сранивать работу наших методов
-    4) сравниваем MyResult и TrueResult
+     * 1) создаем Адресную книгу myResult, с которой будем работать
+     * 2) кладем в Нашу Адресную книгу изначальные данные(тк например в remove, для тестов необходимы начальные данные)
+     * 3) создаем trueResult, где будет храниться правильный ответ, чтобы потом с ним сранивать работу наших методов
+     * 4) сравниваем myResult и trueResult
      */
 
     @org.junit.jupiter.api.Test
     void add() {
+        AddressBook myResult = new AddressBook();
+        /* Основной тест:
+         Добавим нескольких людей в Адресную книгу
+         */
+        Assertions.assertTrue(myResult.add(new Person("Васильев", "Даниил"),
+                new Address("Беговая", 22, 2)));
+        Assertions.assertTrue(myResult.add(new Person("Петров", "Василий"),
+                new Address("Парковая", 13, 5)));
+        Assertions.assertTrue(myResult.add(new Person("Гулиев", "Дмитрий"),
+                new Address("Ботаническая", 13, 11)));
+        Assertions.assertTrue(myResult.add(new Person("Алексеев", "Игорь"),
+                new Address("Озерковая", 19, 234)));
+        Assertions.assertTrue(myResult.add(new Person("Мишустин", "Сергей"),
+                new Address("Озерковая", 14, 234)));
 
-        AddressBook MyResult = new AddressBook();
-        MyResult.Add(new Person("Васильев"), new Address("Беговая", 22, 2 ));
-        MyResult.Add(new Person("Петров"), new Address("Парковая", 13, 5 ));
-        MyResult.Add(new Person("Гулиев"), new Address("Ботаническая", 13, 11 ));
-        MyResult.Add(new Person("Алексеев"), new Address("Озерковая", 19, 234 ));
-        MyResult.Add(new Person("Мишустин"), new Address("Озерковая", 14, 234 ));
-
-        Map<Person, Address> TrueResult = new HashMap<>(Map.of(
-                new Person("Васильев"), new Address("Беговая", 22, 2),
-                new Person("Петров"), new Address("Парковая", 13, 5),
-                new Person("Гулиев"), new Address("Ботаническая", 13, 11),
-                new Person("Алексеев"), new Address("Озерковая", 19, 234),
-                new Person("Мишустин"), new Address("Озерковая", 14, 234)
+        Map<Person, Address> trueResult = new HashMap<>(Map.of(
+                new Person("Васильев", "Даниил"), new Address("Беговая", 22, 2),
+                new Person("Петров", "Василий"), new Address("Парковая", 13, 5),
+                new Person("Гулиев", "Дмитрий"), new Address("Ботаническая", 13, 11),
+                new Person("Алексеев", "Игорь"), new Address("Озерковая", 19, 234),
+                new Person("Мишустин", "Сергей"), new Address("Озерковая", 14, 234)
         ));
 
-        /*
-          Основной тест:
-          Создадим нашу Адресную книгу, при помощи метода Add
-         */
-        Assert.assertEquals(TrueResult, MyResult.getData());
+        // Проверим список людей в Адресной книге
+        Assertions.assertEquals(trueResult, myResult.addressBook);
 
-        /*
-          Дополнительный тест:
-          Попробуем добавить ещё одного человека в Адресную книгу
-         */
-        MyResult.Add(new Person("Дополнов"), new Address("Садовая", 27, 643 ));
-        TrueResult.put(new Person("Дополнов"), new Address("Садовая", 27, 643 ));
-        Assert.assertEquals(TrueResult, MyResult.getData());
+        // Попробуем добавить уже существующего человека
+        Assertions.assertFalse(myResult.add(new Person("Мишустин", "Сергей"),
+                new Address("Озерковая", 14, 234)));
+
+        // Проверим список людей в Адресной книге
+        Assertions.assertEquals(trueResult, myResult.addressBook);
+
+    }
+
+    /**
+     Дополнительный тест:
+     * Попробуем добавить человека, у которого одно из полей == null
+     */
+
+    @org.junit.jupiter.api.Test
+    void addNull() {
+        AddressBook myResult = new AddressBook();
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(null, new Address("Озерковая", 14, 234)));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person("Петров", "Сергей"), null));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person(null, "Сергей"), new Address("Озерковая", 14, 234)));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person(null, "Сергей"), new Address("Озерковая", 14, 234)));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person("Петров", null), new Address("Озерковая", 14, 234)));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person("Петров", "Сергей"), new Address(null, 14, 234)));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person("Петров", "Сергей"), new Address("Озерковая", null, 234)));
+        Assertions.assertThrows(NullPointerException.class, () ->
+                myResult.add(new Person("Петров", "Сергей"), new Address("Озерковая", 14, null)));
     }
 
     @org.junit.jupiter.api.Test
     void remove() {
-        AddressBook MyResult1 = new AddressBook();
-        MyResult1.Add(new Person("Васильев"), new Address("Беговая", 22, 2 ));
-        MyResult1.Add(new Person("Петров"), new Address("Парковая", 13, 5 ));
-        MyResult1.Add(new Person("Гулиев"), new Address("Ботаническая", 13, 11 ));
-        MyResult1.Add(new Person("Алексеев"), new Address("Озерковая", 19, 234 ));
-        MyResult1.Add(new Person("Мишустин"), new Address("Озерковая", 14, 234 ));
+        AddressBook myResult = new AddressBook();
+        myResult.add(new Person("Васильев", "Даниил"), new Address("Беговая", 35, 2 ));
+        myResult.add(new Person("Петров", "Василий"), new Address("Парковая", 31, 5 ));
+        myResult.add(new Person("Гулиев", "Дмитрий"), new Address("Ботаническая", 31, 11 ));
+        myResult.add(new Person("Алексеев", "Игорь"), new Address("Озерковая", 91, 234 ));
+        myResult.add(new Person("Мишустин", "Сергей"), new Address("Озерковая", 32, 234 ));
 
-        MyResult1.Remove(new Person("Алексеев"));
-        MyResult1.Remove(new Person("Мишустин"));
+        /* Основной тест:
+        Удалим нескольких людей из Адресной книги
+        */
+        Assertions.assertTrue(myResult.remove(new Person("Алексеев", "Игорь")));
+        Assertions.assertTrue(myResult.remove(new Person("Мишустин", "Сергей")));
 
-        Map<Person, Address> TrueResult1 = new HashMap<>(Map.of(
-                new Person("Васильев"), new Address("Беговая", 22, 2),
-                new Person("Петров"), new Address("Парковая", 13, 5),
-                new Person("Гулиев"), new Address("Ботаническая", 13, 11 )
+        Map<Person, Address> trueResult = new HashMap<>(Map.of(
+                new Person("Васильев", "Даниил"), new Address("Беговая", 35, 2),
+                new Person("Петров", "Василий"), new Address("Парковая", 31, 5),
+                new Person("Гулиев", "Дмитрий"), new Address("Ботаническая", 31, 11 )
         ));
 
-        /*
-          Основной тест:
-          Удалим нескольких людей из Адресной книги
-         */
-        Assert.assertEquals(TrueResult1, MyResult1.getData());
+        // Проверим список оставшихся людей
+        Assertions.assertEquals(trueResult, myResult.addressBook);
 
-        /*
-          Дополнительный тест:
-          Попробуем удалить человека, которого нет в Адресной книге
-         */
-        MyResult1.Remove(new Person("Пустов"));
-        Assert.assertEquals(TrueResult1, MyResult1.getData());
+        /* Дополнительный тест:
+        Попробуем удалить человека, которого нет в Адресной книги
+        */
+
+        Assertions.assertFalse(myResult.remove(new Person("Пустов", "Анатолий")));
+
+        // Проверим список оставшихся людей
+        Assertions.assertEquals(trueResult, myResult.addressBook);
+    }
+
+    /**
+     Дополнительный тест:
+     * Попробуем удалить null
+     */
+
+    @org.junit.jupiter.api.Test
+    void removeNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            AddressBook result= new AddressBook();
+            result.remove(null);
+        });
     }
 
     @org.junit.jupiter.api.Test
     void change() {
-        AddressBook MyResult2 = new AddressBook();
-        MyResult2.Add(new Person("Васильев"), new Address("Беговая", 22, 2 ));
-        MyResult2.Add(new Person("Петров"), new Address("Парковая", 13, 5 ));
-        MyResult2.Add(new Person("Гулиев"), new Address("Ботаническая", 13, 11 ));
-        MyResult2.Add(new Person("Алексеев"), new Address("Озерковая", 19, 234 ));
-        MyResult2.Add(new Person("Мишустин"), new Address("Озерковая", 14, 234 ));
+        AddressBook myResult = new AddressBook();
+        myResult.add(new Person("Васильева", "Света"), new Address("Беговая", 22, 2 ));
+        myResult.add(new Person("Петрова", "Василиса"), new Address("Парковая", 13, 5 ));
+        myResult.add(new Person("Гулиева", "Дарья"), new Address("Ботаническая", 13, 11 ));
+        myResult.add(new Person("Алексеева", "Илона"), new Address("Озерковая", 19, 234 ));
+        myResult.add(new Person("Мишустина", "Саша"), new Address("Озерковая", 14, 234 ));
 
-        MyResult2.Change(new Person("Мишустин"), new Address("Чечеренская", 14, 234 ));
-        MyResult2.Change(new Person("Гулиев"), new Address("Университетская", 45, 654 ));
+        /* Основной тест:
+        Поменяем Адрес нескольких людей из Адресной книги
+        */
+        Assertions.assertTrue(myResult.change(new Person("Мишустина", "Саша"),
+                new Address("Чечеренская", 14, 234 )));
+        Assertions.assertTrue(myResult.change(new Person("Гулиева", "Дарья"),
+                new Address("Университетская", 45, 654 )));
 
-        Map<Person, Address> TrueResult2 = new HashMap<>(Map.of(
-                new Person("Васильев"), new Address("Беговая", 22, 2 ),
-                new Person("Петров"), new Address("Парковая", 13, 5 ),
-                new Person("Гулиев"), new Address("Университетская", 45, 654 ),
-                new Person("Алексеев"), new Address("Озерковая", 19, 234 ),
-                new Person("Мишустин"), new Address("Чечеренская", 14, 234 )
+        Map<Person, Address> trueResult = new HashMap<>(Map.of(
+                new Person("Васильева", "Света"), new Address("Беговая", 22, 2 ),
+                new Person("Петрова", "Василиса"), new Address("Парковая", 13, 5 ),
+                new Person("Гулиева", "Дарья"), new Address("Университетская", 45, 654 ),
+                new Person("Алексеева", "Илона"), new Address("Озерковая", 19, 234 ),
+                new Person("Мишустина", "Саша"), new Address("Чечеренская", 14, 234 )
         ));
 
-        /*
-          Основной тест:
-          Поменяем Адрес нескольких людей из Адресной книги
-         */
-        Assert.assertEquals(TrueResult2, MyResult2.getData());
+        // Проверим список людей в Адресной книге
+        Assertions.assertEquals(trueResult, myResult.addressBook);
 
-        /*
-          Дополнительный тест:
-          Попробуем поменять Адрес человека, которого нет в Адресной книге
-         */
-        MyResult2.Change(new Person("Марков"), new Address("Пушкинская", 24, 442 ));
-        Assert.assertEquals(TrueResult2, MyResult2.getData());
+        /* Дополнительный тест:
+        Попробуем изменить адрес человека, которого нет в Адресной книге
+        */
+        Assertions.assertFalse(myResult.change(new Person("Марков", "Илья"),
+                new Address("Пушкинская", 24, 442 )));
+
+        // Проверим список людей в Адресной книге
+        Assertions.assertEquals(trueResult, myResult.addressBook);
+    }
+
+    /**
+     Дополнительный тест:
+     * Попробуем изменить адрес человека,у которого какая-то из позиций измененного адреса отсутствует
+     */
+    @org.junit.jupiter.api.Test
+    void changeNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            AddressBook result= new AddressBook();
+            result.add(new Person("Марков", "Илья"), new Address("Пригородная", 24, 442 ));
+            result.change(new Person("Марков", "Илья"), new Address(null, 13, 53 ));
+        });
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            AddressBook result= new AddressBook();
+            result.add(new Person("Марков", "Илья"), new Address("Пригородная", 24, 442 ));
+            result.change(new Person("Марков", "Илья"), new Address("Пушкинская", null, 442 ));
+        });
+        Assertions.assertThrows(NullPointerException.class, () -> {
+            AddressBook result= new AddressBook();
+            result.add(new Person("Марков", "Илья"), new Address("Пригородная", 24, 442 ));
+            result.change(new Person("Марков", "Илья"), new Address("Пушкинская", 24, null ));
+        });
     }
 
     @org.junit.jupiter.api.Test
     void find() {
-        AddressBook MyResult3 = new AddressBook();
-        MyResult3.Add(new Person("Васильев"), new Address("Беговая", 22, 2 ));
-        MyResult3.Add(new Person("Петров"), new Address("Парковая", 13, 5 ));
-        MyResult3.Add(new Person("Гулиев"), new Address("Ботаническая", 13, 11 ));
+        AddressBook myResult = new AddressBook();
+        myResult.add(new Person("Васильев", "Вячеслав"), new Address("Беговая", 22, 2 ));
+        myResult.add(new Person("Петров", "Стас"), new Address("Парковая", 13, 5 ));
+        myResult.add(new Person("Гулиева", "Мария"), new Address("Ботаническая", 13, 11 ));
 
-        /*
-          Основные тесты:
-          Пытаемся найти людей, которые присутствуют в Адресной книге
-         */
-        Assert.assertEquals(new Address("Беговая", 22, 2), MyResult3.Find(new Person("Васильев")));
-        Assert.assertEquals(new Address("Ботаническая", 13, 11 ), MyResult3.Find(new Person("Гулиев")));
-        Assert.assertEquals(new Address("Парковая", 13, 5 ), MyResult3.Find(new Person("Петров")));
+        /* Основные тесты:
+        Пытаемся найти людей, которые присутствуют в Адресной книге
+        */
+        Assertions.assertEquals(new Address("Беговая", 22, 2),
+                myResult.find(new Person("Васильев", "Вячеслав")));
+        Assertions.assertEquals(new Address("Ботаническая", 13, 11 ),
+                myResult.find(new Person("Гулиева", "Мария")));
+        Assertions.assertEquals(new Address("Парковая", 13, 5 ),
+                myResult.find(new Person("Петров", "Стас")));
 
-        /*
-          Дополнительный тест:
-          Попробуем найти человека, которого нет в Адресной книге
-         */
-        Assert.assertNull(MyResult3.Find(new Person("Петрова")));
-    }
+        /* Дополнительный тест:
+        Попробуем найти человека, которого нет в Адресной книге
+        */
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            AddressBook result= new AddressBook();
+            result.add(new Person("Марков", "Евгений"), new Address("Пушкинская", 24, 54 ));
+            result.find(new Person("Марков", "Илья"));
+        });
 
-    @org.junit.jupiter.api.Test
+    } @org.junit.jupiter.api.Test
     void findAllByStreet() {
-        AddressBook MyResult4 = new AddressBook();
-        MyResult4.Add(new Person("Васильев"), new Address("Беговая", 22, 2 ));
-        MyResult4.Add(new Person("Петров"), new Address("Парковая", 13, 5 ));
-        MyResult4.Add(new Person("Гулиев"), new Address("Ботаническая", 13, 11 ));
-        MyResult4.Add(new Person("Алексеев"), new Address("Озерковая", 19, 234 ));
-        MyResult4.Add(new Person("Мишустин"), new Address("Озерковая", 14, 234 ));
+        AddressBook myResult = new AddressBook();
+        myResult.add(new Person("Васильев", "Захар"), new Address("Беговая", 22, 2 ));
+        myResult.add(new Person("Петров", "Руслан"), new Address("Парковая", 13, 5 ));
+        myResult.add(new Person("Гулиев", "Александр"), new Address("Ботаническая", 13, 11 ));
+        myResult.add(new Person("Алексеев", "Егор"), new Address("Озерковая", 19, 234 ));
+        myResult.add(new Person("Мишустин", "Дмитрий"), new Address("Озерковая", 14, 234 ));
 
-        /*
-          Первый тест:
-          для двух людей, которые изначально есть в Адресной книге
-         */
-        ArrayList<Person> TrueResult4 = new ArrayList<>();
-        TrueResult4.add(new Person("Алексеев"));
-        TrueResult4.add(new Person("Мишустин"));
-        Assert.assertEquals(TrueResult4, MyResult4.FindAllByStreet("Озерковая"));
+        /* Первый тест:
+        для двух людей, которые изначально есть в Адресной книге
+        */
+        ArrayList<Person> trueResult = new ArrayList<>();
+        trueResult.add(new Person("Мишустин", "Дмитрий"));
+        trueResult.add(new Person("Алексеев", "Егор"));
+        Assertions.assertEquals(trueResult, myResult.findAllByStreet("Озерковая"));
 
-        /*
-          Второй тест:
-          Добавляем нового человека в Адресную книгу и ищем всех, кто проживает на его улице
-          Примечание: очищаем лист TrueResult4(чтобы то, с чем мы сравниваем результат работы FindAllByStreet
-          было Правильным ответом -> чтобы тест работал корректно)
-         */
-        MyResult4.Add(new Person("Абдулов"), new Address("Гороховая", 14, 234 ));
-        TrueResult4.clear();
-        TrueResult4.add(new Person("Абдулов"));
-        Assert.assertEquals(TrueResult4, MyResult4.FindAllByStreet("Гороховая"));
+        /* Второй тест:
+        Добавляем нового человека в Адресную книгу и ищем всех,кто проживает на его улице
+        Примечание: очищаем лист trueResult(чтобы то, с чем мы сравниваем результат работы findAllByStreet
+        было Правильным ответом -> чтобы тест работал корректно)
+        */
+        myResult.add(new Person("Абдулов", "Ильдар"), new Address("Гороховая", 14, 234 ));
+        trueResult.clear();
+        trueResult.add(new Person("Абдулов", "Ильдар"));
+        Assertions.assertEquals(trueResult, myResult.findAllByStreet("Гороховая"));
 
-        /*
-          Третий тест:
-          Попробуем найти людей, проживающих на удице, которой нет в Адресной книге
-         */
-        TrueResult4.clear();
-        Assert.assertEquals(TrueResult4, MyResult4.FindAllByStreet("Ошибочная"));
+        /* Третий тест:
+        Попробуем найти людей, проживающих на удице, которой нет в Адресной книге
+        */
+        trueResult.clear();
+        Assertions.assertEquals(trueResult, myResult.findAllByStreet("Ошибочная"));
     }
 
     @org.junit.jupiter.api.Test
     void findAllByHouse() {
-        AddressBook MyResult5 = new AddressBook();
-        MyResult5.Add(new Person("Васильев"), new Address("Беговая", 22, 2 ));
-        MyResult5.Add(new Person("Петров"), new Address("Парковая", 13, 5 ));
-        MyResult5.Add(new Person("Гулиев"), new Address("Ботаническая", 13, 11 ));
-        MyResult5.Add(new Person("Алексеев"), new Address("Озерковая", 19, 234 ));
-        MyResult5.Add(new Person("Мишустин"), new Address("Озерковая", 14, 234 ));
+        AddressBook myResult = new AddressBook();
+        myResult.add(new Person("Васильев", "Василий"), new Address("Беговая", 22, 2 ));
+        myResult.add(new Person("Петров", "Петр"), new Address("Парковая", 13, 5 ));
+        myResult.add(new Person("Гулиев", "Гуливер"), new Address("Ботаническая", 13, 11 ));
+        myResult.add(new Person("Алексеев", "Алексей"), new Address("Озерковая", 19, 234 ));
+        myResult.add(new Person("Мишустин", "Михаил"), new Address("Озерковая", 14, 234 ));
 
-        /*
-          Первый тест:
-          для двух людей, которые изначально есть в Адресной книге
-         */
-        ArrayList<Person> TrueResult5 = new ArrayList<>();
-        TrueResult5.add(new Person("Гулиев"));
-        TrueResult5.add(new Person("Петров"));
-        Assert.assertEquals(TrueResult5, MyResult5.FindAllByHouse(13));
+        /* Первый тест:
+        для двух людей, которые изначально есть в Адресной книге
+        */
+        ArrayList<Person> trueResult = new ArrayList<>();
+        trueResult.add(new Person("Гулиев", "Гуливер"));
+        trueResult.add(new Person("Петров", "Петр"));
+        Assertions.assertEquals(trueResult, myResult.findAllByHouse(13));
 
-        /*
-          Второй тест:
-          добавляем нового Человека в Адресную книгу и ищем по его дому,
-          Примечание: очищаем лист TrueResult5(чтобы то, с чем мы сравниваем результат работы FindAllByHouse
-          было Правильным ответом -> чтобы тест работал корректно)
-         */
-        MyResult5.Add(new Person("Васильева"), new Address("Спортивная", 19, 4 ));
-        TrueResult5.clear();
-        TrueResult5.add(new Person("Васильева"));
-        TrueResult5.add(new Person("Алексеев"));
-        Assert.assertEquals(TrueResult5, MyResult5.FindAllByHouse(19));
+        /* Второй тест:
+        добавляем нового Человека в Адресную книгу и ищем по его дому,
+        Примечание: очищаем лист trueResult(чтобы то, с чем мы сравниваем результат работы findAllByHouse
+        было Правильным ответом -> чтобы тест работал корректно)
+        */
+        myResult.add(new Person("Васильева", "Татьяна"), new Address("Спортивная", 19, 4 ));
+        trueResult.clear();
+        trueResult.add(new Person("Васильева", "Татьяна"));
+        trueResult.add(new Person("Алексеев", "Алексей"));
+        Assertions.assertEquals(trueResult, myResult.findAllByHouse(19));
 
-        /*
-          Третий тест:
-          Попробуем найти людей, проживающих в доме, номера которого нет в Адресной книге
-         */
-        TrueResult5.clear();
-        Assert.assertEquals(TrueResult5,  MyResult5.FindAllByHouse(404));
+        /* Третий тест:
+        Попробуем найти людей, проживающих в доме, номера которого нет в Адресной книге
+        */
+        trueResult.clear();
+        Assertions.assertEquals(trueResult, myResult.findAllByHouse(404));
     }
 }
