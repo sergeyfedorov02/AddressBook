@@ -205,11 +205,9 @@ class AddressBookTest {
         /* Дополнительный тест:
         Попробуем найти человека, которого нет в Адресной книге
         */
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            AddressBook result= new AddressBook();
-            result.add(new Person("Марков", "Евгений"), new Address("Пушкинская", 24, 54 ));
-            result.find(new Person("Марков", "Илья"));
-        });
+        AddressBook result= new AddressBook();
+        result.add(new Person("Марков", "Евгений"), new Address("Пушкинская", 24, 54 ));
+        Assertions.assertNull(result.find(new Person("Марков", "Илья")));
 
     } @org.junit.jupiter.api.Test
     void findAllByStreet() {

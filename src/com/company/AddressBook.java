@@ -65,8 +65,6 @@ public class AddressBook {
      если попытаемся найти человека, которого нет в Адресной книге,
      */
     public Address find(Person person){
-        if (!addressBook.containsKey(person))
-            throw new IllegalArgumentException();
         return addressBook.get(person);
     }
 
